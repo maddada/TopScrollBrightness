@@ -1,6 +1,7 @@
-//! The on-screen indicator, styled and placed like Windows 11's volume
-//! indicator: a click-through, never-focused panel centred near the top of the
-//! monitor being adjusted. It fades out shortly after the last change.
+//! The on-screen indicator, styled like Windows 11's volume indicator: a
+//! click-through, never-focused panel centred near the top of the monitor being
+//! adjusted, just below where the volume indicator appears so both can be seen
+//! at once. It fades out shortly after the last change.
 
 use std::ffi::c_void;
 use std::sync::atomic::{AtomicPtr, AtomicU8, Ordering};
@@ -33,9 +34,11 @@ const FADE_TIMER: usize = 2;
 const HOLD_MS: u32 = 1500;
 const FADE_STEP_MS: u32 = 16;
 const FADE_STEPS: u8 = 10;
-/// Gap between the top of the usable screen area (below any top bar) and the
-/// indicator, in 96-DPI pixels, where Windows places its volume indicator.
-const TOP_GAP: f64 = 25.0;
+/// Gap between the top of the usable screen area (below any top bar) and
+/// Windows' volume indicator, in 96-DPI pixels.
+const VOLUME_TOP_GAP: f64 = 25.0;
+/// Space between the volume indicator and this one below it, in 96-DPI pixels.
+const STACK_GAP: f64 = 12.0;
 /// The "Brightness" glyph in Windows' icon fonts.
 const SUN_GLYPH: &str = "\u{E706}";
 const ICON_FONTS: [&str; 2] = ["Segoe Fluent Icons", "Segoe MDL2 Assets"];
@@ -156,11 +159,12 @@ fn draw(hwnd: HWND, monitor: HMONITOR, fraction: f64, value: u32) {
         let scale = dpi.max(96) as f64 / 96.0;
         let Some(surface) = Surface::render(scale, fraction, value, &theme_palette()) else { return };
 
-        // Centred, a little below the top of the usable area (under any top bar).
+        // Centred, just below where Windows shows its volume indicator (which is
+        // the same size), so the two never overlap.
         let work = info.rcWork;
         let position = POINT {
             x: work.left + (work.right - work.left - surface.width) / 2,
-            y: work.top + (TOP_GAP * scale).round() as i32,
+            y: work.top + ((VOLUME_TOP_GAP + STACK_GAP) * scale).round() as i32 + surface.height,
         };
         let size = SIZE { cx: surface.width, cy: surface.height };
         let origin = POINT { x: 0, y: 0 };

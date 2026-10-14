@@ -19,8 +19,9 @@ first time: click **More info → Run anyway**.
 | Pointer at the top edge, scroll down | Dimmer |
 | Scroll anywhere else | Normal scrolling |
 
-While you scroll, an indicator styled and placed like Windows 11's volume indicator shows the
-level (in your theme and accent colour), then fades out.
+While you scroll, an indicator styled like Windows 11's volume indicator shows the level (in your
+theme and accent colour), then fades out. It sits just below where the volume indicator appears,
+so you can see both at once.
 Each wheel notch changes the brightness by 5% by default; pick 1, 2, 5 or 10% under **Step per
 scroll notch** in the tray menu. High-resolution wheels and trackpads change it smoothly.
 
